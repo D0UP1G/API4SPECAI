@@ -3,13 +3,14 @@ from fastapi.security import OAuth2PasswordBearer
 from fastapi.exceptions import HTTPException
 from jose import JWTError, jwt
 from typing import Optional
+from description import get_seo 
 
 app = FastAPI(redoc_url=None)
 
 
 app = FastAPI()
 
-SECRET_KEY = "SecretKey"
+SECRET_KEY = "rSDntr5pGzC9q82_WlIdDY3_UhYOvTse6hjKM61vygE"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
@@ -45,6 +46,18 @@ def AI_sign(company:str, model:str, token):
 }
 
 @app.get("/get_sign")
-def read_root(token:str, brand:str, model:str):
+def get_sign(token:str, brand:str, model:str):
     
     return AI_sign('Xiaomi', 'Xiaomi Redmi Note mega NFC plus Ultra 5-6G', token=token)
+
+
+#Заменить на примерный выход из 1
+@app.get("/get_description")
+def AI_description(specifications, token):
+    try:
+            payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+            # Здесь вы можете выполнить проверку токена и получить информацию о пользователе из токена
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Неверные учетные данные")
+    res = get_seo(str(specifications))
+    return res
